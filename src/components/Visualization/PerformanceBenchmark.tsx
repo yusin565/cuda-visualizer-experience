@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -213,6 +213,88 @@ const GpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
   );
 };
 
+// Comparison Chart component
+const ComparisonChart = ({ position }: { position: [number, number, number] }) => {
+  // Build the comparison chart lines with useMemo to optimize rendering
+  const cpuLineVertices = useMemo(() => {
+    const vertices = new Float32Array(6);
+    vertices[0] = -2; // x1
+    vertices[1] = 0;  // y1
+    vertices[2] = 0;  // z1
+    vertices[3] = -2; // x2
+    vertices[4] = 1;  // y2
+    vertices[5] = 0;  // z2
+    return vertices;
+  }, []);
+  
+  const gpuLineVertices = useMemo(() => {
+    const vertices = new Float32Array(6);
+    vertices[0] = 2; // x1
+    vertices[1] = 0; // y1 
+    vertices[2] = 0; // z1
+    vertices[3] = 2; // x2
+    vertices[4] = 5; // y2
+    vertices[5] = 0; // z2
+    return vertices;
+  }, []);
+  
+  return (
+    <group position={position}>
+      {/* Draw CPU bar manually using a mesh */}
+      <mesh position={[-2, 0.5, 0]}>
+        <boxGeometry args={[1, 1, 0.5]} />
+        <meshStandardMaterial color="#0077C5" />
+      </mesh>
+      
+      {/* Draw GPU bar manually using a mesh */}
+      <mesh position={[2, 2.5, 0]}>
+        <boxGeometry args={[1, 5, 0.5]} />
+        <meshStandardMaterial color="#76B900" />
+      </mesh>
+      
+      <Text
+        position={[-2, -0.7, 0]}
+        fontSize={0.3}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        CPU
+      </Text>
+      
+      <Text
+        position={[-2, 0, 0.5]}
+        fontSize={0.3}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        1x
+      </Text>
+      
+      <Text
+        position={[2, -0.7, 0]}
+        fontSize={0.3}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        GPU
+      </Text>
+      
+      <Text
+        position={[2, 5, 0.5]}
+        fontSize={0.3}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        25x
+      </Text>
+    </group>
+  );
+};
+
 const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails }) => {
   const [cpuProgress, setCpuProgress] = useState(0);
   const [gpuProgress, setGpuProgress] = useState(0);
@@ -267,53 +349,7 @@ const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails
               Performance Comparison
             </Text>
             
-            {/* CPU Bar */}
-            <mesh position={[-2, 0, 0]}>
-              <boxGeometry args={[1, 1, 0.5]} />
-              <meshStandardMaterial color="#0077C5" />
-            </mesh>
-            <Text
-              position={[-2, -0.7, 0]}
-              fontSize={0.3}
-              color="white"
-              anchorX="center"
-              anchorY="middle"
-            >
-              CPU
-            </Text>
-            <Text
-              position={[-2, 0, 0.5]}
-              fontSize={0.3}
-              color="white"
-              anchorX="center"
-              anchorY="middle"
-            >
-              1x
-            </Text>
-            
-            {/* GPU Bar */}
-            <mesh position={[2, 0, 0]} scale={[1, gpuProgress / 4, 1]}>
-              <boxGeometry args={[1, 1, 0.5]} />
-              <meshStandardMaterial color="#76B900" />
-            </mesh>
-            <Text
-              position={[2, -0.7, 0]}
-              fontSize={0.3}
-              color="white"
-              anchorX="center"
-              anchorY="middle"
-            >
-              GPU
-            </Text>
-            <Text
-              position={[2, (gpuProgress / 4) * 0.5, 0.5]}
-              fontSize={0.3}
-              color="white"
-              anchorX="center"
-              anchorY="middle"
-            >
-              {Math.round(gpuProgress / 4)}x
-            </Text>
+            <ComparisonChart position={[0, 0, 0]} />
           </group>
         )}
         
