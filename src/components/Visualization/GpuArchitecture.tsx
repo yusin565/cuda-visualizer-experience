@@ -243,9 +243,13 @@ const MemoryHierarchy = ({ position, activeLevel, showDetails }: {
   
   // Helper for creating a line object - fixed version
   const createLine = (from: number, to: number) => {
-    const positions = new Float32Array([
-      0, memoryTypes[from].y, 0,
-      0, memoryTypes[to].y, 0
+    const fromY = memoryTypes[from].y;
+    const toY = memoryTypes[to].y;
+    
+    // Create vertices array with the correct format for three.js
+    const vertices = new Float32Array([
+      0, fromY, 0,
+      0, toY, 0
     ]);
     
     return (
@@ -255,7 +259,7 @@ const MemoryHierarchy = ({ position, activeLevel, showDetails }: {
             attach="attributes-position"
             count={2}
             itemSize={3}
-            array={positions}
+            array={vertices}
           />
         </bufferGeometry>
         <lineBasicMaterial 

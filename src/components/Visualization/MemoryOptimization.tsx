@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
@@ -94,7 +95,8 @@ const Thread = ({ position, color, active, index, accessingIndices }: {
       </Text>
       
       {active && accessingIndices.map((accessIdx, i) => {
-        const positions = new Float32Array([
+        // Create vertices array for the line
+        const vertices = new Float32Array([
           0, 0, 0,
           0, -2.5, 0,
           accessIdx - position[0], -2.5, 0
@@ -107,7 +109,7 @@ const Thread = ({ position, color, active, index, accessingIndices }: {
                 attach="attributes-position"
                 count={3}
                 itemSize={3}
-                array={positions}
+                array={vertices}
               />
             </bufferGeometry>
             <lineBasicMaterial color={color} linewidth={2} />
