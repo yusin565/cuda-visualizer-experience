@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Text } from '@react-three/drei';
+import { Text, Line } from '@react-three/drei';
 import MemoryCell from './MemoryCell';
+import * as THREE from 'three';
 
 interface MemoryHierarchyProps {
   position: [number, number, number];
@@ -38,35 +39,6 @@ const MemoryHierarchy: React.FC<MemoryHierarchyProps> = ({
     { from: 3, to: 4 }  // Global to Host
   ];
   
-  // Helper for creating a line object - fixed version
-  const createLine = (from: number, to: number) => {
-    const fromY = memoryTypes[from].y;
-    const toY = memoryTypes[to].y;
-    
-    // Create vertices array with the correct format for three.js
-    const vertices = new Float32Array([
-      0, fromY, 0,
-      0, toY, 0
-    ]);
-    
-    return (
-      <line key={`${from}-${to}`}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={2}
-            itemSize={3}
-            array={vertices}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial 
-          color="#555555" 
-          linewidth={2} 
-        />
-      </line>
-    );
-  };
-  
   return (
     <group position={position}>
       <Text
@@ -91,8 +63,18 @@ const MemoryHierarchy: React.FC<MemoryHierarchyProps> = ({
         />
       ))}
       
-      {/* Connecting lines */}
-      {lineConnections.map((conn) => createLine(conn.from, conn.to))}
+      {/* Connecting lines - replaced with drei Line component */}
+      {lineConnections.map((conn) => (
+        <Line
+          key={`${conn.from}-${conn.to}`}
+          points={[
+            new THREE.Vector3(0, memoryTypes[conn.from].y, 0),
+            new THREE.Vector3(0, memoryTypes[conn.to].y, 0)
+          ]}
+          color="#555555"
+          lineWidth={1}
+        />
+      ))}
       
       {/* Performance metrics */}
       {showDetails && (

@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
+import { Line } from '@react-three/drei';
 
 interface AccessLineProps {
   startPos: [number, number, number];
@@ -15,26 +16,20 @@ export const AccessLine: React.FC<AccessLineProps> = ({
   endPos, 
   color 
 }) => {
-  // Create vertices array for the line using useMemo to avoid recreating on every render
-  const vertices = useMemo(() => {
-    return new Float32Array([
-      startPos[0], startPos[1], startPos[2],
-      midPos[0], midPos[1], midPos[2],
-      endPos[0], endPos[1], endPos[2]
-    ]);
+  // Create points array for the curved line
+  const points = useMemo(() => {
+    return [
+      new THREE.Vector3(startPos[0], startPos[1], startPos[2]),
+      new THREE.Vector3(midPos[0], midPos[1], midPos[2]),
+      new THREE.Vector3(endPos[0], endPos[1], endPos[2])
+    ];
   }, [startPos, midPos, endPos]);
   
   return (
-    <line>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          array={vertices}
-          count={vertices.length / 3}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <lineBasicMaterial color={color} />
-    </line>
+    <Line 
+      points={points}
+      color={color}
+      lineWidth={1}
+    />
   );
 };
