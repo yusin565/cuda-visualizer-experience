@@ -241,9 +241,9 @@ const MemoryHierarchy = ({ position, activeLevel, showDetails }: {
     { from: 3, to: 4 }  // Global to Host
   ];
   
-  // Helper for creating a line object
+  // Helper for creating a line object - fixed version
   const createLine = (from: number, to: number) => {
-    const vertices = new Float32Array([
+    const positions = new Float32Array([
       0, memoryTypes[from].y, 0,
       0, memoryTypes[to].y, 0
     ]);
@@ -254,8 +254,8 @@ const MemoryHierarchy = ({ position, activeLevel, showDetails }: {
           <bufferAttribute
             attach="attributes-position"
             count={2}
-            array={vertices}
             itemSize={3}
+            array={positions}
           />
         </bufferGeometry>
         <lineBasicMaterial 

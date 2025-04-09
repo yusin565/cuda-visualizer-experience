@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
@@ -95,7 +94,7 @@ const Thread = ({ position, color, active, index, accessingIndices }: {
       </Text>
       
       {active && accessingIndices.map((accessIdx, i) => {
-        const vertices = new Float32Array([
+        const positions = new Float32Array([
           0, 0, 0,
           0, -2.5, 0,
           accessIdx - position[0], -2.5, 0
@@ -107,8 +106,8 @@ const Thread = ({ position, color, active, index, accessingIndices }: {
               <bufferAttribute
                 attach="attributes-position"
                 count={3}
-                array={vertices}
                 itemSize={3}
+                array={positions}
               />
             </bufferGeometry>
             <lineBasicMaterial color={color} linewidth={2} />
@@ -132,20 +131,17 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
   const [threadAccessPatterns, setThreadAccessPatterns] = useState<number[][]>([]);
   const [accessEfficiency, setAccessEfficiency] = useState(0);
   
-  // Generate memory access patterns based on the selected pattern
   useEffect(() => {
     const patterns: number[][] = [];
     let activeCells: number[] = [];
     
     if (accessPattern === 'coalesced') {
-      // Each thread accesses consecutive memory locations
       for (let i = 0; i < threadsActive; i++) {
         patterns.push([i]);
         activeCells.push(i);
       }
       setAccessEfficiency(100);
     } else if (accessPattern === 'strided') {
-      // Each thread accesses memory with a stride
       const stride = 2;
       for (let i = 0; i < threadsActive; i++) {
         const idx = i * stride % numMemoryCells;
@@ -154,7 +150,6 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
       }
       setAccessEfficiency(50);
     } else if (accessPattern === 'random') {
-      // Each thread accesses random memory locations
       for (let i = 0; i < threadsActive; i++) {
         const randomIdx = Math.floor(Math.random() * numMemoryCells);
         patterns.push([randomIdx]);
@@ -162,7 +157,6 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
       }
       setAccessEfficiency(25);
     } else if (accessPattern === 'shared') {
-      // Using shared memory, threads cooperatively load into shared then access
       const sharedIndices = [];
       for (let i = 0; i < Math.min(threadsActive, numMemoryCells); i++) {
         sharedIndices.push(i);
@@ -190,7 +184,6 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
         {memoryType === 'global' ? 'Global Memory Access' : 'Shared Memory Access'}
       </Text>
       
-      {/* Memory cells */}
       {Array(numMemoryCells).fill(0).map((_, i) => (
         <MemoryCell 
           key={i} 
@@ -201,9 +194,8 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
         />
       ))}
       
-      {/* Threads */}
       {Array(threadsActive).fill(0).map((_, i) => {
-        if (i < 8) { // Limit display to 8 threads for clarity
+        if (i < 8) {
           return (
             <Thread 
               key={i} 
@@ -218,7 +210,6 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
         return null;
       })}
       
-      {/* Efficiency indicator */}
       {showDetails && (
         <group position={[numMemoryCells / 2 + 2, -1.5, 0]}>
           <Text
@@ -250,7 +241,6 @@ const MemoryAccess = ({ position, memoryType, accessPattern, threadsActive, show
         </group>
       )}
       
-      {/* Memory transaction indicator */}
       {showDetails && (
         <group position={[-numMemoryCells / 2 - 2, -1.5, 0]}>
           <Text
@@ -285,7 +275,6 @@ const MemoryOptimization: React.FC<MemoryOptimizationProps> = ({
   memoryAccess, 
   showDetails 
 }) => {
-  // Determine how many threads to show based on blockSize
   const threadsToShow = Math.min(Math.max(4, blockSize / 32), 8);
   
   return (
@@ -294,7 +283,6 @@ const MemoryOptimization: React.FC<MemoryOptimizationProps> = ({
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
         
-        {/* Memory access visualization */}
         <MemoryAccess 
           position={[0, 0, 0]} 
           memoryType={memoryAccess === 'shared' ? 'shared' : 'global'} 
@@ -306,7 +294,6 @@ const MemoryOptimization: React.FC<MemoryOptimizationProps> = ({
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
       </Canvas>
       
-      {/* Overlay information */}
       <div className="absolute bottom-4 left-4 card-gradient p-4 rounded-lg max-w-md">
         <h3 className="text-nvidia-green mb-2 font-medium">Memory Access Patterns</h3>
         <p className="text-sm text-gray-300">
