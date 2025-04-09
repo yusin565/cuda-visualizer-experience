@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -96,6 +97,73 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-nvidia-dark text-nvidia-light;
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  /* Custom styling */
+  .grid-bg {
+    background-image: 
+      linear-gradient(rgba(119, 185, 0, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(119, 185, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+  }
+
+  .nvidia-glow {
+    text-shadow: 0 0 5px rgba(119, 185, 0, 0.7);
+  }
+
+  .card-gradient {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%);
+    border: 1px solid rgba(119, 185, 0, 0.3);
+  }
+
+  /* Tooltip styling */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(26, 26, 26, 0.9);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border: 1px solid #76B900;
+  }
+
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1A1A1A;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #76B900;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5a8c00;
   }
 }
