@@ -94,22 +94,27 @@ const Thread = ({ position, color, active, index, accessingIndices }: {
         {index}
       </Text>
       
-      {active && accessingIndices.map((accessIdx, i) => (
-        <line key={i}>
-          <bufferGeometry 
-            attach="geometry" 
-            args={[
-              new Float32Array([
-                0, 0, 0,
-                0, -2.5, 0,
-                accessIdx - position[0], -2.5, 0
-              ]), 
-              3
-            ]} 
-          />
-          <lineBasicMaterial attach="material" color={color} linewidth={2} />
-        </line>
-      ))}
+      {active && accessingIndices.map((accessIdx, i) => {
+        const vertices = new Float32Array([
+          0, 0, 0,
+          0, -2.5, 0,
+          accessIdx - position[0], -2.5, 0
+        ]);
+        
+        return (
+          <line key={i}>
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                count={3}
+                array={vertices}
+                itemSize={3}
+              />
+            </bufferGeometry>
+            <lineBasicMaterial color={color} linewidth={2} />
+          </line>
+        );
+      })}
     </group>
   );
 };
