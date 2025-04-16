@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface InfoOverlayProps {
   blocksActive: number;
@@ -17,35 +18,28 @@ const InfoOverlay: React.FC<InfoOverlayProps> = ({
   activeLevel,
   showDetails
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="absolute bottom-4 left-4 card-gradient p-4 rounded-lg max-w-md">
-      <div className="flex justify-between items-center">
-        <h3 className="text-nvidia-green mb-0 font-medium">CUDA Execution Model</h3>
-        <button 
-          onClick={toggleExpand} 
-          className="text-nvidia-green hover:text-white transition-colors"
-          aria-label={isExpanded ? "Collapse panel" : "Expand panel"}
-        >
-          {isExpanded ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-        </button>
+    <div className="absolute bottom-4 left-4 card-gradient rounded-lg max-w-md overflow-hidden">
+      <div className="bg-nvidia-green/80 px-4 py-3">
+        <h3 className="text-white font-medium">CUDA Execution Model</h3>
       </div>
       
-      {isExpanded && (
-        <>
-          <p className="text-sm text-gray-300 mt-2">
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        className="w-full"
+      >
+        <CollapsibleContent className="p-4">
+          <p className="text-sm text-gray-300 mb-3">
             The CUDA programming model organizes threads into blocks, and blocks into a grid. 
             This hierarchy maps efficiently to NVIDIA GPU hardware, enabling massive parallelism 
             with thousands of concurrent threads.
           </p>
           
           {showDetails && (
-            <div className="mt-2 space-y-1">
+            <div className="space-y-2">
               <div className="text-sm flex justify-between">
                 <span>Active Blocks:</span>
                 <span className="text-nvidia-green">{blocksActive} of 9</span>
@@ -64,8 +58,14 @@ const InfoOverlay: React.FC<InfoOverlayProps> = ({
               </div>
             </div>
           )}
-        </>
-      )}
+        </CollapsibleContent>
+        
+        <div className="bg-nvidia-green/80 p-1 flex justify-center cursor-pointer">
+          <CollapsibleTrigger className="w-full flex justify-center items-center">
+            <div className="w-10 h-1 bg-white/50 rounded-full"></div>
+          </CollapsibleTrigger>
+        </div>
+      </Collapsible>
     </div>
   );
 };
