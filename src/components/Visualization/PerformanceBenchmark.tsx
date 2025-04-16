@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import DraggablePanel from '../UI/DraggablePanel';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface PerformanceBenchmarkProps {
   showDetails: boolean;
@@ -285,6 +286,7 @@ const ComparisonChart = ({ position }: { position: [number, number, number] }) =
 const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails }) => {
   const [cpuProgress, setCpuProgress] = useState(0);
   const [gpuProgress, setGpuProgress] = useState(0);
+  const [isInfoExpanded, setIsInfoExpanded] = useState(true);
   
   useEffect(() => {
     const cpuInterval = setInterval(() => {
@@ -312,6 +314,10 @@ const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails
       clearInterval(gpuInterval);
     };
   }, []);
+  
+  const toggleInfoExpand = () => {
+    setIsInfoExpanded(!isInfoExpanded);
+  };
   
   return (
     <div className="relative w-full h-full">
@@ -343,26 +349,40 @@ const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails
       
       <DraggablePanel initialPosition={{ x: 20, y: 20 }}>
         <div className="card-gradient p-4 rounded-lg max-w-md">
-          <h3 className="text-nvidia-green mb-2 font-medium">Real-time Performance Comparison</h3>
-          <p className="text-sm text-gray-300">
-            Watch in real-time as the GPU processes tasks in parallel, completing the workload significantly faster than the CPU.
-            GPU acceleration can provide 10-30x speedup for various workloads compared to CPU-only processing.
-          </p>
-          {showDetails && (
-            <div className="mt-2 space-y-1">
-              <div className="text-sm flex justify-between">
-                <span>CPU Progress:</span>
-                <span className="text-blue-400">{Math.round(cpuProgress)}%</span>
-              </div>
-              <div className="text-sm flex justify-between">
-                <span>GPU Progress:</span>
-                <span className="text-nvidia-green">{Math.round(gpuProgress)}%</span>
-              </div>
-              <div className="text-sm flex justify-between">
-                <span>Speed Improvement:</span>
-                <span className="text-nvidia-green">{cpuProgress > 0 ? Math.round((gpuProgress / cpuProgress) * 10) / 10 : 0}x</span>
-              </div>
-            </div>
+          <div className="flex justify-between items-center">
+            <h3 className="text-nvidia-green mb-0 font-medium">Real-time Performance Comparison</h3>
+            <button 
+              onClick={toggleInfoExpand} 
+              className="text-nvidia-green hover:text-white transition-colors"
+              aria-label={isInfoExpanded ? "Collapse panel" : "Expand panel"}
+            >
+              {isInfoExpanded ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+            </button>
+          </div>
+          
+          {isInfoExpanded && (
+            <>
+              <p className="text-sm text-gray-300 mt-2">
+                Watch in real-time as the GPU processes tasks in parallel, completing the workload significantly faster than the CPU.
+                GPU acceleration can provide 10-30x speedup for various workloads compared to CPU-only processing.
+              </p>
+              {showDetails && (
+                <div className="mt-2 space-y-1">
+                  <div className="text-sm flex justify-between">
+                    <span>CPU Progress:</span>
+                    <span className="text-blue-400">{Math.round(cpuProgress)}%</span>
+                  </div>
+                  <div className="text-sm flex justify-between">
+                    <span>GPU Progress:</span>
+                    <span className="text-nvidia-green">{Math.round(gpuProgress)}%</span>
+                  </div>
+                  <div className="text-sm flex justify-between">
+                    <span>Speed Improvement:</span>
+                    <span className="text-nvidia-green">{cpuProgress > 0 ? Math.round((gpuProgress / cpuProgress) * 10) / 10 : 0}x</span>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </DraggablePanel>
