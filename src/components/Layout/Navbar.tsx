@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, setActiveSection }) => {
           <span className="text-nvidia-dark font-bold">3D</span>
         </div>
         <h1 className="text-2xl font-bold text-white">
-          CUDA <span className="text-nvidia-green">Visualizer</span>
+          CUDA <span className="text-nvidia-green">Visualizer Group 5 Demo</span>
         </h1>
       </div>
       

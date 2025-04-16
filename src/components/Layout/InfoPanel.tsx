@@ -27,9 +27,9 @@ const InfoPanel: React.FC<InfoPanelProps> = ({
         <h4 className="text-sm font-medium text-nvidia-green mb-2">Key Insights:</h4>
         <ul className="space-y-2">
           {keyPoints.map((point, index) => (
-            <li key={index} className="text-sm flex items-start gap-2">
+            <li key={index} className="text-sm flex items-start gap-2 bg-gradient-to-r from-nvidia-dark to-nvidia-gray p-2 rounded-md border-l-2 border-nvidia-green">
               <span className="text-nvidia-green mt-0.5">►</span>
-              <span>{point}</span>
+              <span className="text-gray-200">{point}</span>
             </li>
           ))}
         </ul>
