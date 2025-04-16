@@ -87,7 +87,6 @@ const Index = () => {
       <div className="container mx-auto px-4 py-6">
         <h1 className="text-3xl font-bold text-white mb-6">
           CUDA <span className="text-nvidia-green">Acceleration</span> Visualizer
-          <span className="text-sm ml-2 text-nvidia-green">Group 5 Demo</span>
         </h1>
         
         <div className="flex flex-col lg:flex-row gap-6">

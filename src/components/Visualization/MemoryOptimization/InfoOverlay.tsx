@@ -1,6 +1,5 @@
 
-import React, { useState } from 'react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import React from 'react';
 
 interface InfoOverlayProps {
   accessPattern: string;
@@ -15,8 +14,6 @@ const InfoOverlay: React.FC<InfoOverlayProps> = ({
   memoryType, 
   showDetails 
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
-
   const getDescription = () => {
     if (accessPattern === 'coalesced') {
       return "Coalesced memory access combines multiple individual thread requests into fewer efficient transactions, significantly improving performance.";
@@ -52,49 +49,32 @@ const InfoOverlay: React.FC<InfoOverlayProps> = ({
   };
 
   return (
-    <div className="absolute bottom-4 left-4 card-gradient rounded-lg max-w-md overflow-hidden">
-      <div className="bg-nvidia-green/80 px-4 py-3">
-        <h3 className="text-white font-medium">Memory Access Patterns</h3>
-      </div>
+    <div className="absolute bottom-4 left-4 card-gradient p-4 rounded-lg max-w-md">
+      <h3 className="text-nvidia-green mb-2 font-medium">Memory Access Patterns</h3>
+      <p className="text-sm text-gray-300">
+        {getDescription()}
+      </p>
       
-      <Collapsible
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        className="w-full"
-      >
-        <CollapsibleContent className="p-4">
-          <p className="text-sm text-gray-300 mb-3">
-            {getDescription()}
-          </p>
-          
-          {showDetails && (
-            <div className="space-y-2">
-              <div className="text-sm flex justify-between">
-                <span>Active Threads:</span>
-                <span className="text-nvidia-green">{threadsActive}</span>
-              </div>
-              <div className="text-sm flex justify-between">
-                <span>Memory Type:</span>
-                <span className={memoryType === 'shared' ? "text-yellow-400" : "text-blue-400"}>
-                  {memoryType === 'shared' ? 'Shared Memory' : 'Global Memory'}
-                </span>
-              </div>
-              <div className="text-sm flex justify-between">
-                <span>Efficiency:</span>
-                <span className={getEfficiencyClass()}>
-                  {getEfficiencyText()}
-                </span>
-              </div>
-            </div>
-          )}
-        </CollapsibleContent>
-        
-        <div className="bg-nvidia-green/80 p-1 flex justify-center cursor-pointer">
-          <CollapsibleTrigger className="w-full flex justify-center items-center">
-            <div className="w-10 h-1 bg-white/50 rounded-full"></div>
-          </CollapsibleTrigger>
+      {showDetails && (
+        <div className="mt-2 space-y-1">
+          <div className="text-sm flex justify-between">
+            <span>Active Threads:</span>
+            <span className="text-nvidia-green">{threadsActive}</span>
+          </div>
+          <div className="text-sm flex justify-between">
+            <span>Memory Type:</span>
+            <span className={memoryType === 'shared' ? "text-yellow-400" : "text-blue-400"}>
+              {memoryType === 'shared' ? 'Shared Memory' : 'Global Memory'}
+            </span>
+          </div>
+          <div className="text-sm flex justify-between">
+            <span>Efficiency:</span>
+            <span className={getEfficiencyClass()}>
+              {getEfficiencyText()}
+            </span>
+          </div>
         </div>
-      </Collapsible>
+      )}
     </div>
   );
 };
