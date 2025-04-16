@@ -5,6 +5,7 @@ import { OrbitControls } from '@react-three/drei';
 import Grid from './Grid';
 import MemoryHierarchy from './MemoryHierarchy';
 import InfoOverlay from './InfoOverlay';
+import DraggablePanel from '../../UI/DraggablePanel';
 
 interface GpuArchitectureProps {
   blockSize: number;
@@ -83,14 +84,16 @@ const GpuArchitecture: React.FC<GpuArchitectureProps> = ({ blockSize, showDetail
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
       </Canvas>
       
-      {/* Overlay information */}
-      <InfoOverlay
-        blocksActive={blocksActive}
-        threadsActive={threadsActive}
-        blockSize={blockSize}
-        activeLevel={activeLevel}
-        showDetails={showDetails}
-      />
+      {/* Draggable Overlay information */}
+      <DraggablePanel initialPosition={{ x: 20, y: 20 }}>
+        <InfoOverlay
+          blocksActive={blocksActive}
+          threadsActive={threadsActive}
+          blockSize={blockSize}
+          activeLevel={activeLevel}
+          showDetails={showDetails}
+        />
+      </DraggablePanel>
     </div>
   );
 };

@@ -1,8 +1,8 @@
-
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
+import DraggablePanel from '../UI/DraggablePanel';
 
 interface PerformanceBenchmarkProps {
   showDetails: boolean;
@@ -20,13 +20,11 @@ const Worker = ({ position, color, active, processingSpeed }: {
   
   useFrame(() => {
     if (active) {
-      // Pulse effect
       setScale(prev => {
         const newScale = prev + Math.sin(Date.now() * 0.005 * processingSpeed) * 0.05;
         return Math.max(0.9, Math.min(1.1, newScale));
       });
       
-      // Processing animation
       meshRef.current.rotation.y += 0.02 * processingSpeed;
     }
   });
@@ -72,7 +70,6 @@ const CpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
   tasksCompleted: number,
   showDetails: boolean
 }) => {
-  // Place CPU cores in a line
   return (
     <group position={position}>
       <Text
@@ -85,7 +82,6 @@ const CpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
         CPU Processing
       </Text>
       
-      {/* Progress bar */}
       <mesh position={[0, 1, 0]}>
         <boxGeometry args={[6, 0.4, 0.4]} />
         <meshStandardMaterial color="#333333" />
@@ -104,7 +100,6 @@ const CpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
         {tasksCompleted}%
       </Text>
       
-      {/* Display CPU cores */}
       {Array(numCores).fill(0).map((_, i) => {
         const x = ((i % 4) - 1.5) * 1.2;
         const z = Math.floor(i / 4) * 1.2 - 1;
@@ -119,7 +114,6 @@ const CpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
         );
       })}
       
-      {/* Task grid */}
       {showDetails && Array(100).fill(0).map((_, i) => {
         const x = ((i % 10) - 4.5) * 0.4;
         const z = Math.floor(i / 10) * 0.4 - 4;
@@ -143,7 +137,6 @@ const GpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
   tasksCompleted: number,
   showDetails: boolean
 }) => {
-  // Place GPU cores in a grid
   const coresPerRow = Math.ceil(Math.sqrt(numCores));
   
   return (
@@ -158,7 +151,6 @@ const GpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
         GPU Processing
       </Text>
       
-      {/* Progress bar */}
       <mesh position={[0, 1, 0]}>
         <boxGeometry args={[6, 0.4, 0.4]} />
         <meshStandardMaterial color="#333333" />
@@ -177,9 +169,8 @@ const GpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
         {tasksCompleted}%
       </Text>
       
-      {/* Display GPU cores in a grid */}
       {Array(numCores).fill(0).map((_, i) => {
-        if (i < 64) { // Limit display to avoid overcrowding
+        if (i < 64) {
           const x = ((i % coresPerRow) - (coresPerRow / 2)) * 0.35 + 0.175;
           const z = (Math.floor(i / coresPerRow) - (coresPerRow / 2)) * 0.35 + 0.175;
           return (
@@ -195,9 +186,8 @@ const GpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
         return null;
       })}
       
-      {/* Task grid (more tasks for GPU) */}
       {showDetails && Array(100).fill(0).map((_, i) => {
-        const gridSize = 10; // 10x10 grid
+        const gridSize = 10;
         const x = ((i % gridSize) - (gridSize / 2)) * 0.4 + 0.2;
         const z = (Math.floor(i / gridSize) - (gridSize / 2)) * 0.4 + 0.2;
         return (
@@ -215,38 +205,35 @@ const GpuSimulation = ({ position, numCores, tasksCompleted, showDetails }: {
 
 // Comparison Chart component
 const ComparisonChart = ({ position }: { position: [number, number, number] }) => {
-  // Build the comparison chart lines with useMemo to optimize rendering
   const cpuLineVertices = useMemo(() => {
     const vertices = new Float32Array(6);
-    vertices[0] = -2; // x1
-    vertices[1] = 0;  // y1
-    vertices[2] = 0;  // z1
-    vertices[3] = -2; // x2
-    vertices[4] = 1;  // y2
-    vertices[5] = 0;  // z2
+    vertices[0] = -2;
+    vertices[1] = 0;
+    vertices[2] = 0;
+    vertices[3] = -2;
+    vertices[4] = 1;
+    vertices[5] = 0;
     return vertices;
   }, []);
   
   const gpuLineVertices = useMemo(() => {
     const vertices = new Float32Array(6);
-    vertices[0] = 2; // x1
-    vertices[1] = 0; // y1 
-    vertices[2] = 0; // z1
-    vertices[3] = 2; // x2
-    vertices[4] = 5; // y2
-    vertices[5] = 0; // z2
+    vertices[0] = 2;
+    vertices[1] = 0;
+    vertices[2] = 0;
+    vertices[3] = 2;
+    vertices[4] = 5;
+    vertices[5] = 0;
     return vertices;
   }, []);
   
   return (
     <group position={position}>
-      {/* Draw CPU bar manually using a mesh */}
       <mesh position={[-2, 0.5, 0]}>
         <boxGeometry args={[1, 1, 0.5]} />
         <meshStandardMaterial color="#0077C5" />
       </mesh>
       
-      {/* Draw GPU bar manually using a mesh */}
       <mesh position={[2, 2.5, 0]}>
         <boxGeometry args={[1, 5, 0.5]} />
         <meshStandardMaterial color="#76B900" />
@@ -332,11 +319,9 @@ const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
         
-        {/* CPU and GPU simulations side by side */}
         <CpuSimulation position={[-5, 0, 0]} numCores={8} tasksCompleted={cpuProgress} showDetails={showDetails} />
         <GpuSimulation position={[5, 0, 0]} numCores={128} tasksCompleted={gpuProgress} showDetails={showDetails} />
         
-        {/* Chart showing speedup */}
         {showDetails && (
           <group position={[0, -5, 0]}>
             <Text
@@ -356,30 +341,31 @@ const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
       </Canvas>
       
-      {/* Overlay information */}
-      <div className="absolute bottom-4 left-4 card-gradient p-4 rounded-lg max-w-md">
-        <h3 className="text-nvidia-green mb-2 font-medium">Real-time Performance Comparison</h3>
-        <p className="text-sm text-gray-300">
-          Watch in real-time as the GPU processes tasks in parallel, completing the workload significantly faster than the CPU.
-          GPU acceleration can provide 10-30x speedup for various workloads compared to CPU-only processing.
-        </p>
-        {showDetails && (
-          <div className="mt-2 space-y-1">
-            <div className="text-sm flex justify-between">
-              <span>CPU Progress:</span>
-              <span className="text-blue-400">{Math.round(cpuProgress)}%</span>
+      <DraggablePanel initialPosition={{ x: 20, y: 20 }}>
+        <div className="card-gradient p-4 rounded-lg max-w-md">
+          <h3 className="text-nvidia-green mb-2 font-medium">Real-time Performance Comparison</h3>
+          <p className="text-sm text-gray-300">
+            Watch in real-time as the GPU processes tasks in parallel, completing the workload significantly faster than the CPU.
+            GPU acceleration can provide 10-30x speedup for various workloads compared to CPU-only processing.
+          </p>
+          {showDetails && (
+            <div className="mt-2 space-y-1">
+              <div className="text-sm flex justify-between">
+                <span>CPU Progress:</span>
+                <span className="text-blue-400">{Math.round(cpuProgress)}%</span>
+              </div>
+              <div className="text-sm flex justify-between">
+                <span>GPU Progress:</span>
+                <span className="text-nvidia-green">{Math.round(gpuProgress)}%</span>
+              </div>
+              <div className="text-sm flex justify-between">
+                <span>Speed Improvement:</span>
+                <span className="text-nvidia-green">{cpuProgress > 0 ? Math.round((gpuProgress / cpuProgress) * 10) / 10 : 0}x</span>
+              </div>
             </div>
-            <div className="text-sm flex justify-between">
-              <span>GPU Progress:</span>
-              <span className="text-nvidia-green">{Math.round(gpuProgress)}%</span>
-            </div>
-            <div className="text-sm flex justify-between">
-              <span>Speed Improvement:</span>
-              <span className="text-nvidia-green">{cpuProgress > 0 ? Math.round((gpuProgress / cpuProgress) * 10) / 10 : 0}x</span>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </DraggablePanel>
     </div>
   );
 };

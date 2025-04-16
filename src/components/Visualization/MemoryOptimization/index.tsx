@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import MemoryAccessVisualization from './MemoryAccessVisualization';
 import InfoOverlay from './InfoOverlay';
+import DraggablePanel from '../../UI/DraggablePanel';
 
 interface MemoryOptimizationProps {
   blockSize: number;
@@ -35,12 +36,14 @@ const MemoryOptimization: React.FC<MemoryOptimizationProps> = ({
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
       </Canvas>
       
-      <InfoOverlay 
-        accessPattern={memoryAccess} 
-        threadsActive={threadsToShow} 
-        memoryType={memoryAccess === 'shared' ? 'shared' : 'global'} 
-        showDetails={showDetails}
-      />
+      <DraggablePanel initialPosition={{ x: 20, y: 20 }}>
+        <InfoOverlay 
+          accessPattern={memoryAccess} 
+          threadsActive={threadsToShow} 
+          memoryType={memoryAccess === 'shared' ? 'shared' : 'global'} 
+          showDetails={showDetails}
+        />
+      </DraggablePanel>
     </div>
   );
 };

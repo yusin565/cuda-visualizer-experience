@@ -24,19 +24,19 @@ const InfoPanel: React.FC<InfoPanelProps> = ({
       </CardHeader>
       <Separator className="bg-nvidia-green/30" />
       <CardContent className="pt-4">
-        <h4 className="text-sm font-medium text-nvidia-green mb-2">Key Insights:</h4>
+        <h4 className="text-sm font-medium bg-gradient-to-r from-blue-400 to-nvidia-green bg-clip-text text-transparent mb-2">Key Insights:</h4>
         <ul className="space-y-2">
           {keyPoints.map((point, index) => (
-            <li key={index} className="text-sm flex items-start gap-2">
-              <span className="text-nvidia-green mt-0.5">►</span>
-              <span>{point}</span>
+            <li key={index} className="text-sm flex items-start gap-2 group transition-all duration-300">
+              <span className="text-nvidia-green mt-0.5 group-hover:scale-110 transition-transform">►</span>
+              <span className="group-hover:text-blue-300 transition-colors">{point}</span>
             </li>
           ))}
         </ul>
         
         {section === 'performance' && (
           <div className="mt-4 pt-4 border-t border-nvidia-green/30">
-            <h4 className="text-sm font-medium text-nvidia-green mb-2">Performance Speedup:</h4>
+            <h4 className="text-sm font-medium bg-gradient-to-r from-blue-400 to-nvidia-green bg-clip-text text-transparent mb-2">Performance Speedup:</h4>
             <div className="space-y-2">
               <div>
                 <div className="flex justify-between mb-1">
@@ -44,7 +44,7 @@ const InfoPanel: React.FC<InfoPanelProps> = ({
                   <span className="text-xs text-nvidia-green">20-30x</span>
                 </div>
                 <div className="w-full bg-nvidia-gray rounded-full h-2">
-                  <div className="bg-nvidia-green h-2 rounded-full animate-pulse-glow" style={{ width: '85%' }}></div>
+                  <div className="bg-gradient-to-r from-blue-400 to-nvidia-green h-2 rounded-full animate-pulse-glow" style={{ width: '85%' }}></div>
                 </div>
               </div>
               <div>
@@ -53,7 +53,7 @@ const InfoPanel: React.FC<InfoPanelProps> = ({
                   <span className="text-xs text-nvidia-green">15-40x</span>
                 </div>
                 <div className="w-full bg-nvidia-gray rounded-full h-2">
-                  <div className="bg-nvidia-green h-2 rounded-full animate-pulse-glow" style={{ width: '90%' }}></div>
+                  <div className="bg-gradient-to-r from-blue-400 to-nvidia-green h-2 rounded-full animate-pulse-glow" style={{ width: '90%' }}></div>
                 </div>
               </div>
               <div>
@@ -62,7 +62,7 @@ const InfoPanel: React.FC<InfoPanelProps> = ({
                   <span className="text-xs text-nvidia-green">10-25x</span>
                 </div>
                 <div className="w-full bg-nvidia-gray rounded-full h-2">
-                  <div className="bg-nvidia-green h-2 rounded-full animate-pulse-glow" style={{ width: '75%' }}></div>
+                  <div className="bg-gradient-to-r from-blue-400 to-nvidia-green h-2 rounded-full animate-pulse-glow" style={{ width: '75%' }}></div>
                 </div>
               </div>
             </div>
