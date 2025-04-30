@@ -1,8 +1,9 @@
-
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface PerformanceBenchmarkProps {
   showDetails: boolean;
@@ -298,6 +299,7 @@ const ComparisonChart = ({ position }: { position: [number, number, number] }) =
 const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails }) => {
   const [cpuProgress, setCpuProgress] = useState(0);
   const [gpuProgress, setGpuProgress] = useState(0);
+  const [isOpen, setIsOpen] = useState(true);
   
   useEffect(() => {
     const cpuInterval = setInterval(() => {
@@ -356,29 +358,45 @@ const PerformanceBenchmark: React.FC<PerformanceBenchmarkProps> = ({ showDetails
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
       </Canvas>
       
-      {/* Overlay information */}
-      <div className="absolute bottom-4 left-4 card-gradient p-4 rounded-lg max-w-md">
-        <h3 className="text-nvidia-green mb-2 font-medium">Real-time Performance Comparison</h3>
-        <p className="text-sm text-gray-300">
-          Watch in real-time as the GPU processes tasks in parallel, completing the workload significantly faster than the CPU.
-          GPU acceleration can provide 10-30x speedup for various workloads compared to CPU-only processing.
-        </p>
-        {showDetails && (
-          <div className="mt-2 space-y-1">
-            <div className="text-sm flex justify-between">
-              <span>CPU Progress:</span>
-              <span className="text-blue-400">{Math.round(cpuProgress)}%</span>
-            </div>
-            <div className="text-sm flex justify-between">
-              <span>GPU Progress:</span>
-              <span className="text-nvidia-green">{Math.round(gpuProgress)}%</span>
-            </div>
-            <div className="text-sm flex justify-between">
-              <span>Speed Improvement:</span>
-              <span className="text-nvidia-green">{cpuProgress > 0 ? Math.round((gpuProgress / cpuProgress) * 10) / 10 : 0}x</span>
-            </div>
+      {/* Overlay information - now collapsible */}
+      <div className="absolute bottom-4 left-4 card-gradient rounded-lg max-w-md">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
+          <div className="p-4 pb-2">
+            <CollapsibleTrigger className="flex items-center justify-between w-full group">
+              <h3 className="text-nvidia-green font-medium">Real-time Performance Comparison</h3>
+              {isOpen ? (
+                <ChevronUp className="h-4 w-4 text-nvidia-green transition-transform group-hover:text-white" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-nvidia-green transition-transform group-hover:text-white" />
+              )}
+            </CollapsibleTrigger>
           </div>
-        )}
+
+          <CollapsibleContent>
+            <div className="px-4 pb-4">
+              <p className="text-sm text-gray-300">
+                Watch in real-time as the GPU processes tasks in parallel, completing the workload significantly faster than the CPU.
+                GPU acceleration can provide 10-30x speedup for various workloads compared to CPU-only processing.
+              </p>
+              {showDetails && (
+                <div className="mt-2 space-y-1">
+                  <div className="text-sm flex justify-between">
+                    <span>CPU Progress:</span>
+                    <span className="text-blue-400">{Math.round(cpuProgress)}%</span>
+                  </div>
+                  <div className="text-sm flex justify-between">
+                    <span>GPU Progress:</span>
+                    <span className="text-nvidia-green">{Math.round(gpuProgress)}%</span>
+                  </div>
+                  <div className="text-sm flex justify-between">
+                    <span>Speed Improvement:</span>
+                    <span className="text-nvidia-green">{cpuProgress > 0 ? Math.round((gpuProgress / cpuProgress) * 10) / 10 : 0}x</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     </div>
   );
